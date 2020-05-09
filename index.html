@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Minutes of Meeting</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/894870cb8b.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Chilanka|Cookie|Courgette|Dancing+Script|Gayathri|Itim|Manjari|Marck+Script|Merienda|Rancho|Rochester|Sacramento&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css\styles.css">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+
+    <div id="main">
+      <h1 class="top" contenteditable="true">Title</h1>
+      <p class="current-time">
+
+      </p>
+      <img src="https://images.pexels.com/photos/1198264/pexels-photo-1198264.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="pic">
+
+      <form action="/index" method="post">
+        <div id="formone">
+          <div class="form-group row rowone">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Minute Taker</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputEmail3" value="prashantshekhar21102001@gmail.com" name="taker"  autocomplete="off" disabled>
+            </div>
+          </div>
+
+          <div class="form-group row rowone">
+            <label for="inputEmail4" multiple class="col-sm-2 col-form-label">Invitees</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputEmail4" placeholder="name and email addresses" name="attendees"  autocomplete="off" pattern="^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$">
+            </div>
+          </div>
+        <!-- </div> -->
+
+
+
+        <div class="form-group row rowone">
+          <label for="inputEmail4" class="col-sm-2 col-form-label">Agenda</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputEmail4" placeholder="about the meeting" name="about"  autocomplete="off">
+          </div>
+        </div>
+      </div>
+
+        <a href="#" type="button" name="button1" class="others">Others</a>
+
+        <br> <br> <br>
+
+
+      <table class="T-two-1">
+       <tr class="line-tr">
+       <td class="qwe">  Type  </td>
+       <td> Venue  </td>
+       <td>  Time  </td>
+       <td>  Date  </td>
+     </tr>
+
+     <tr>
+
+
+
+        <td>
+
+          <div class="dropdown">
+
+          <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Todo
+          </button>
+
+
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+           <button class="dropdown-item" type="button">AGENDA</button>
+          <button class="dropdown-item" type="button">DECISION</button>
+          <button class="dropdown-item" type="button">DONE</button>
+          <button class="dropdown-item" type="button">INFO</button>
+          <button class="dropdown-item" type="button">IDEA</button>
+          <button class="dropdown-item" type="button">TODO</button>
+          </div>
+
+        </div>
+        </td>
+
+        <td>
+          <div class="input-group input-group-sm mb-3">
+          <input type="text" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="note">
+          </div>
+        </td>
+
+
+        <td>
+          <div class="input-group input-group-sm mb-3">
+          <input type="time" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="initial">
+          </div>
+        </td>
+
+          <td>
+            <div class="input-group input-group-sm mb-3">
+            <input type="date" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="date" min="2020-03-01">
+            </div>
+            <!-- <input type="date" class="due" name="cal"> -->
+          </td>
+          <td>
+            <i class="fas fa-times delete"></i>
+          </td>
+        </tr>
+      </table>
+
+        <button type="button" class="add btn btn-outline-danger btn-sm buttons">Add</button>
+
+        <button type="submit" value="submit" name="file" class="btn btn-primary btn-sm buttons"><i class="fas fa-check"></i> Submit</button>
+        <button type="submit" name="button" class="btn btn-danger btn-sm buttons publish">Publish</button>
+
+      </form>
+
+
+
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+        <!-- <script src="JS\index.js" charset="utf-8"></script> -->
+      </div>
+    </div>
+  </body>
+</html>
+<!-- <button type="button" class="delete btn btn-outline-danger btn-sm buttons"> -->

@@ -1,0 +1,45 @@
+body{
+  width : 75%;
+}
+
+form{
+  margin : 3% 10% 0 2.5rem;
+  font-family : "Itim";
+}
+/* Chilanka|Cookie|Courgette|Dancing+Script|Gayathri|Itim|Manjari|Marck+Script|Merienda|Rancho|Rochester|Sacramento&display=swap" */
+#updateForm{
+  margin-bottom : 3%;
+}
+
+.time , .date{
+  width : 7rem;
+}
+
+.date{
+  width : 15rem;
+}
+
+.venue , .agenda{
+  width : 20rem;
+}
+
+hr{
+  width : 10%;
+  position : relative;
+  right : 35%;
+
+}
+
+h3{
+  margin-top : 1.5rem;
+  margin-left : 1.5rem;
+  font-family : "Merienda";
+}
+
+.click{
+  margin-right : 1rem;
+}
+
+.click{
+  background-color : none;
+}

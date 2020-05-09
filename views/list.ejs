@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Meetings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/894870cb8b.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Chilanka|Cookie|Courgette|Dancing+Script|Gayathri|Itim|Manjari|Marck+Script|Merienda|Rancho|Rochester|Sacramento&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css\stylelist.css">
+    </head>
+  <body>
+  <form action="/list" method="post">
+    <h1>Your Meetings</h1>
+    <ul>
+      <%  totalMeetings.forEach(function(meetings){  %>
+        <li>
+          <p>Day of Meeting : <%= meetings.Date %> </p>
+
+          <p>Email of Minute Taker : <%= meetings.minuteTakerEmail %> </p>
+
+          <p>Email of Attendees :  <%= meetings.invitedEmail %> </p>
+
+          <p>Agenda :  <%= meetings.Agenda %> </p>
+
+          <p>Venue : <%= meetings.Venue %> </p>
+
+          <!-- <button type="submit" class="cross" name="checkbox" value=<%= meetings._id %>><i class="fas fa-times delete"></i></button> -->
+
+            <!-- <button type="submit" name="update" value=<%= meetings._id %>>Update</button> -->
+            <!-- <a href="/update" name="checkbox" value=<%= meetings._id %>>Update</a> -->
+            <button type="submit" class="cross" name="updateButton" value=<%= meetings._id %>>Update</button>
+
+        </li><hr>
+      <%  })  %>
+    </ul>
+
+    <button type="submit" class="done btn btn-danger btn-md" name="donetwo" value="two">NewFile</button>
+    <button type="submit" class="done btn btn-outline-danger btn-md" name="doneone" value="one">Done</button>
+
+  </form>
+
+  </body>
+</html>
+ <!-- btn btn-outline-danger btn-sm buttons -->
+ <!-- for(var i=0; i<itemList.length; i++){ -->
+<!-- itemList[i]
+itemTakerEmail[i]
+itemAttendeesEmail[i] -->

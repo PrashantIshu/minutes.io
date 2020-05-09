@@ -1,0 +1,161 @@
+
+.top {
+  border : none;
+  font-size: 3rem;
+  margin-left : 11rem;
+  width : auto;
+  background-color : #f9f6f7;
+  font-family : "Merienda";
+}
+
+
+/* .top:hover {
+  background-color: #fff1cf;
+} */
+.top::placeholder{
+  color : black;
+}
+
+form{
+  margin-top : 4rem;
+}
+
+/* table{
+  text-align : center;
+  margin : 0 auto;
+} */
+
+p{
+  margin-left : 11rem;
+}
+/*
+.T-one{
+  width : 70%;
+}
+
+
+.T-one input{
+  width : 100%;
+}
+
+.T-one label{
+  width : 100%;
+}
+
+/* .T-one td{
+  border : 1px solid black;
+} */
+
+/* .T-one tr{
+  height : 1.5rem;
+}
+
+.T-two{
+  width : 70%;
+  height : 2rem;
+  margin-top : 2.5rem;
+}
+
+.T-two td{
+  /* border : 1px solid black; */
+/* } */
+
+/* .T-two input{
+  width : 100%;
+}
+
+input:hover {
+  background-color : lightgreen;
+} */ */ */
+
+.form1{
+  color:  blue;
+}
+
+.row{
+  width : 75%;
+  margin : 0 auto;
+}
+
+.form-control:hover{
+  background-color : #fff1cf;
+}
+
+
+
+.others{
+  margin-left : 80%;
+  margin-right : 10px;
+}
+
+a{
+  color : grey;
+  font-size : 0.9rem;
+  margin-top : 5px;
+}
+
+.input-two{
+  position : relative;
+  top : 8px;
+}
+
+.due:hover{
+  background-color : #fff1cf;
+}
+
+.T-two-1{
+  margin : 0 auto;
+  width : 65%;
+  text-align : right;
+}
+
+.line-tr{
+  text-align : left;
+}
+
+.qwe{
+  position : relative;
+  left : 3rem;
+}
+.buttons{
+
+  width : 5rem;
+}
+
+.btn-primary{
+  margin-top : 10px;
+}
+
+.add{
+  margin-left : 44%;
+  margin-top : 10px;
+}
+
+body{
+  position : relative;
+  background-color: #f9f6f7;
+  font-family : "Itim";
+}
+
+img{
+  width : 10%;
+  position: absolute;
+  right : 11rem;
+  top : 1rem;
+}
+
+/* IDEA:  */
+.delete{
+  margin-left : 3px;
+  color : grey;
+}
+
+.delete:hover{
+  color : red;
+}
+
+.publish{
+  position : relative;
+  top : 4rem;
+  right : 7.7rem;
+}
