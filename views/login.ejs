@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+
+<div class="register">
+
+<img src="https://instagram.fpat1-1.fna.fbcdn.net/v/t51.2885-19/s320x320/73187703_655736258287339_430602829707608064_n.jpg?_nc_ht=instagram.fpat1-1.fna.fbcdn.net&_nc_ohc=5_iThzEsFAAAX8jDruk&oh=92d47450574f3b0292538e18a5983828&oe=5EE04452" alt="" width="82" height="82" style="border-radius : 50%">
+<h1>Login to my Minutes.io</h1>
+<form action="/login" method="POST">
+
+  <input type="email" class = "firstname  form-control" name="username" placeholder="Email address" />
+  <!-- <input type="text" class = "secondname form-control" name="secondname" placeholder="enter password" /> -->
+  <input type="password" class = "email form-control" name="password" placeholder="Password" />
+  <input type="submit" class = "btn btn-primary sign-in form-control" name="sign-in" value="Login!">
+
+  <div class="col-sm-4">
+    <div class="card social-block">
+      <div class="card-body">
+        <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
+          <i class="fab fa-google"></i>
+          Sign Up with Google
+        </a>
+      </div>
+    </div>
+  </div>
+</form>
+  <span class="mt-5 mb-3 text-muted">&copy; Prashant Shekhar</span>
+
+  </div>
+<%- include('partials/footer') %>
