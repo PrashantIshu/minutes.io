@@ -159,3 +159,13 @@ img{
   top : 4rem;
   right : 7.7rem;
 }
+
+.menu{
+  position : absolute;
+  right : 1.5rem;
+  top : 2rem;
+}
+
+.dropdown-item:hover{
+  color : #dcdde1;
+}

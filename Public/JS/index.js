@@ -27,18 +27,20 @@ function add() {
 //     '</div>' +
 //   '</div>');
 // };
-
+setInterval(function(){
 let today = new Date();
 let options = {
-  weekday : "long",
+  // weekday : "long",
   month : "long",
   day : "numeric",
   year : "numeric",
   hour : "numeric",
   minute : "numeric",
+  second : "numeric",
 };
 let day = today.toLocaleDateString("en-US" , options);
 $(".current-time").html(day);
+},1000);
 
 var counter = 1;
 $(".add").click(function() {

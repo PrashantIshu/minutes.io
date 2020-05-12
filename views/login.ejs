@@ -6,21 +6,21 @@
 <h1>Login to my Minutes.io</h1>
 <form action="/login" method="POST">
 
-  <input type="email" class = "firstname  form-control" name="username" placeholder="Email address" />
+  <input type="email" class = "firstname  form-control" name="username" placeholder="Email address" autocomplete="on"/>
   <!-- <input type="text" class = "secondname form-control" name="secondname" placeholder="enter password" /> -->
   <input type="password" class = "email form-control" name="password" placeholder="Password" />
   <input type="submit" class = "btn btn-primary sign-in form-control" name="sign-in" value="Login!">
-
-  <div class="col-sm-4">
+  <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
+    <i class="fab fa-google"></i>
+    Log In with Google
+  </a>
+  <!-- <div class="col-sm-4">
     <div class="card social-block">
       <div class="card-body">
-        <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
-          <i class="fab fa-google"></i>
-          Sign Up with Google
-        </a>
+
       </div>
     </div>
-  </div>
+  </div> -->
 </form>
   <span class="mt-5 mb-3 text-muted">&copy; Prashant Shekhar</span>
 

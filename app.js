@@ -11,7 +11,7 @@ const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const findOrCreate = require('mongoose-findorcreate')
+const findOrCreate = require('mongoose-findorcreate');
 //const bcrypt = require('bcrypt');
 //const saltRounds = 10;
 //const md5 = require('md5');
@@ -38,13 +38,15 @@ passport.use(new GoogleStrategy({
     userProfileUrl: "https://www.googleapis.com/oauth2/v3/userinfo",
   },
   function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    Meeting.findOrCreate({ googleId: profile.id }, function (err, user) {
       return cb(err, user);
     });
   }
 ));
 
 mongoose.connect("mongodb://localhost:27017/minutesDB" , {useNewUrlParser : true});
+mongoose.connect("mongodb://localhost:27017/minuteUserDB" , {useNewUrlParser : true});
+mongoose.set('useCreateIndex' , true);
 
 let a;
 let b,c,p,q,d;
@@ -70,14 +72,14 @@ const meetingsSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     // unique: true,
-    required: 'Email address is required',
+    //required: 'Email address is required',
   },
   invitedEmail: {
     type: String,
     trim: true,
     lowercase: true,
     // unique: true,
-    required: 'Email address is required',
+    //required: 'Email address is required',
   },
   Agenda: String,
   Venue: String,
@@ -86,21 +88,155 @@ const meetingsSchema = new mongoose.Schema({
     type: Date,
     min: 2020-03-01,
   },
+
+
+    email : {
+      type : String,
+    },
+    password : {
+      type : String,
+    },
+    googleId : String,
+
 });
 
-const Meeting = mongoose.model("Meeting" , meetingsSchema);
+const minuteUserSchema = new mongoose.Schema({
+  minuteTakerEmail: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    // unique: true,
+    //required: 'Email address is required',
+  },
+  invitedEmail: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    // unique: true,
+    //required: 'Email address is required',
+  },
+  Agenda: String,
+  Venue: String,
 
-app.get("/list" , function(req , res){
-  Meeting.find(function(err , meetings){
-    if(!err){
-    if(meetings.length === 0){
-      res.redirect("/copy");
+  Date: {
+    type: Date,
+    min: 2020-03-01,
+  },
+  key : String,
+  user : String,
+});
+
+meetingsSchema.plugin(passportLocalMongoose);
+meetingsSchema.plugin(findOrCreate);
+
+const Meeting = mongoose.model("Meeting" , meetingsSchema);
+const Minuteuser = mongoose.model("Minuteuser" , minuteUserSchema);
+
+passport.use(Meeting.createStrategy());
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+passport.deserializeUser(function(id, done) {
+  Meeting.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+app.post("/register" , function(req , res){
+  // bcrypt.hash(req.body.pass , 10 , function(err, hash) {
+  //   const anyUser = new User({
+  //     email : req.body.email,
+  //     password : hash,
+  //   });
+  //   anyUser.save(function(err){
+  //     if(!err){
+  //         res.redirect("/index");
+  //     }
+  //     else{
+  //       console.log(err);
+  //     }
+  //   });
+  // });
+  Meeting.register({username : req.body.username} , req.body.password , function(err , user){
+    if(err){
+      console.log(err);
+      res.redirect("/register");
     }
     else{
-      res.render("list" , {itemList : itemsOne , itemTakerEmail : itemsTwo , itemAttendeesEmail : itemsThree , totalMeetings : meetings});
+        passport.authenticate("local")(req , res , function(){
+        res.redirect("/index");
+      });
     }
-  }
   });
+});
+
+app.post("/login" , function(req , res){
+  // User.findOne({email : req.body.email} , function(err , userItem){
+  //   if(!err){
+  //     if(userItem){
+  //       bcrypt.compare(req.body.password , userItem.password , function(err , result) {
+  //
+  //           if(result === true){
+  //             res.redirect("/index");
+  //             }
+  //             else{
+  //               res.redirect("/login");
+  //             }
+  //
+  //         });
+  //   }
+  // }
+  // });
+  const user = new Meeting({
+    username : req.body.username,
+    password : req.body.password,
+  });
+
+  req.login(user , function(err){
+    if(err){
+      console.log(err);
+    }
+    else{
+      passport.authenticate("local")(req , res , function(){
+        res.redirect("/index");
+      });
+    }
+  });
+});
+
+app.get("/logout" , function(req , res){
+  req.logout();
+  res.redirect("/home");
+});
+
+app.get("/auth/google",
+  passport.authenticate('google', { scope: ["profile"] }));
+
+app.get("/auth/google/index",
+  passport.authenticate("google" , { failureRedirect: "/login" }),
+  function(req, res) {
+    res.redirect("/index");
+  });
+
+
+app.get("/list" , function(req , res){
+  if(req.isAuthenticated()){
+    Minuteuser.find({key: req.user.id} , function(err , meetings){
+      if(!err){
+      if(meetings.length === 0){
+        res.redirect("/copy");
+      }
+      else{
+         //res.render("list" , {itemList : itemsOne , itemTakerEmail : minuteTakerEmail , itemAttendeesEmail : itemsThree , totalMeetings : meetings});
+      res.render("list" , {totalMeetings : meetings});
+      }
+    }
+  });
+  }
+
+  else{
+    res.redirect("/login");
+  }
 
 });
 
@@ -204,7 +340,7 @@ app.post("/index" , function(req , res){
     ;`
 
   let transporter = nodeMailer.createTransport({
-                                                            // from: 'prashantshekhar28102001@gmail.com',
+
     service: "gmail",
     host: 'smtp.gmail.com',                                 // hostname
     secureConnection: true,                                 // use SSL
@@ -213,10 +349,10 @@ app.post("/index" , function(req , res){
     pool : true,
     auth: {
       user: 'prashantshekhar21102001@gmail.com',
-      pass: 'prashantshekhar28102001'
+      pass: process.env.Password,
     }
   });
-                                                            // hitmanshekhar28102001@gmail.com
+
   let mailOptions = {
     from : '"Prashant" <prashantshekhar21102001@gmail.com>',
     to :    c,
@@ -242,21 +378,72 @@ app.post("/index" , function(req , res){
   itemsFive.push(p);
   q = req.body.note;
   itemsSix.push(q);
-  const meetingOne = new Meeting({
-    minuteTakerEmail: 'prashantshekhar21102001@gmail.com',
-    invitedEmail: c,
-    Agenda: p,
-    Venue: q,
-    Date: a,
-  });
-  meetingOne.save();
-  if(req.body.file === "submit"){
-    res.redirect("/index");
-  }
-  else{
-    res.redirect("/list");
-  }
-});
+
+  console.log(req.user.id);
+  Meeting.findById(req.user.id , function(err , foundUser){
+    if(err){
+      console.log(err);
+    } else {
+      if(foundUser){
+        console.log("User Found");
+        foundUser.minuteTakerEmail = 'prashantshekhar21102001@gmail.com';
+        foundUser.invitedEmail = c;
+        foundUser.Agenda = p;
+        foundUser.Venue = q;
+        foundUser.Date = a;
+        foundUser.save();
+        // function(){
+        //   res.redirect("/index");
+        // });
+      }
+    }
+    });
+        const meetingOne = new Minuteuser({
+            key: req.user.id,
+           minuteTakerEmail: 'prashantshekhar21102001@gmail.com',
+           invitedEmail: c,
+           Agenda: p,
+           Venue: q,
+           Date: a,
+           user: req.user.username,
+        });
+
+         //function(){
+         //    res.redirect("/index");
+         //  });
+         if(req.body.file === 'submit'){
+           meetingOne.save();
+           res.redirect("/index");
+         }
+
+         // else if(req.body.button === 'publish'){
+         else{
+            res.redirect("/list");
+        }
+
+        });
+
+
+        //});
+      //   const meetingOne = new Minuteuser({
+      //   minuteTakerEmail: 'prashantshekhar21102001@gmail.com',
+      //   invitedEmail: c,
+      //   Agenda: p,
+      //   Venue: q,
+      //   Date: a,
+      // });
+       //meetingOne.save();
+
+
+
+  //
+  // if(req.isAuthenticated()){
+  //
+  // else{
+  //   res.redirect("/login");
+  // }
+
+
 var updateId;
 app.post("/list" , function(req,res){
   var meetingId = req.body.checkbox;
@@ -277,7 +464,12 @@ app.post("/list" , function(req,res){
   });
 
 app.get("/update" , function(req , res){
-  res.sendFile(__dirname + "/update.html");
+  if(req.isAuthenticated()){
+    res.sendFile(__dirname + "/update.html");
+  }
+  else{
+    res.redirect("/login");
+  }
 
 });
 
@@ -344,7 +536,7 @@ app.post("/update" , function(req , res){
           };
 
 
-      Meeting.deleteOne({_id : updateId} , function(err){
+      Minuteuser.deleteOne({key: req.user.id , _id : updateId} , function(err){
         if(err){
           console.log(err);
         }
@@ -356,7 +548,6 @@ app.post("/update" , function(req , res){
     }
 
     else{
-      console.log(req.body);
       if(req.body.i === 'jyoti'){
         res.redirect("/venue");
       }
@@ -387,7 +578,7 @@ app.get("/venue" , function(req , res){
 
 app.post("/venue" , function(req , res){
   testVenue = req.body.update;
-  Meeting.updateOne({_id : updateId} , {Venue : testVenue} , function(err){
+  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Venue : testVenue} , function(err){
     if(err){
       console.log(err);
     }
@@ -404,7 +595,7 @@ app.get("/agenda" , function(req , res){
 
 app.post("/agenda" , function(req , res){
   testAgenda = req.body.updateag;
-  Meeting.updateOne({_id : updateId} , {Agenda : testAgenda} , function(err){
+  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Agenda : testAgenda} , function(err){
     if(err){
       console.log(err);
     }
@@ -421,7 +612,7 @@ app.get("/time" , function(req , res){
 
 app.post("/time" , function(req , res){
   testTime = req.body.updateti;
-  Meeting.updateOne({_id : updateId} , {Time : testTime} , function(err){
+  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Time : testTime} , function(err){
     if(err){
       console.log(err);
     }
@@ -438,7 +629,7 @@ app.get("/date" , function(req , res){
 
 app.post("/date" , function(req , res){
   testDate = req.body.updateda;
-  Meeting.updateOne({_id : updateId} , {Date : testDate} , function(err){
+  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Date : testDate} , function(err){
     if(err){
       console.log(err);
     }
@@ -455,7 +646,7 @@ app.get("/invitees" , function(req , res){
 
 app.post("/invitees" , function(req , res){
   testInvitees = req.body.updatein;
-  Meeting.updateOne({_id : updateId} , {invitedEmail : testInvitees} , function(err){
+  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {invitedEmail : testInvitees} , function(err){
     if(err){
       console.log(err);
     }
@@ -466,7 +657,7 @@ app.post("/invitees" , function(req , res){
   });
 });
 
-Meeting.findOne({_id : updateId} , function(err , foundMeetings){
+Minuteuser.findOne({key: req.user.id , _id : updateId} , function(err , foundMeetings){
     if(err){
       console.log(err);
     }
@@ -503,7 +694,7 @@ let outputUpdated = `
 
 
 let transporter = nodeMailer.createTransport({
-                                                          // from: 'prashantshekhar28102001@gmail.com',
+
   service: "gmail",
   host: 'smtp.gmail.com',                                 // hostname
   secureConnection: true,                                 // use SSL
@@ -513,11 +704,11 @@ let transporter = nodeMailer.createTransport({
   auth: {
     // type: "OAuth2",
     user: 'prashantshekhar21102001@gmail.com',
-    pass: 'prashantshekhar28102001'
+    pass: process.env.Password,
   }
 });
 
-                                                        // hitmanshekhar28102001@gmail.com
+                                                      
 let mailOptions = {
     from : '"Prashant" <prashantshekhar21102001@gmail.com>',
     to : em,
@@ -543,106 +734,100 @@ if(req.body.mail === 'submit'){
 // *********************************************authenticate*********************************************************
 
 
-mongoose.connect("mongodb://localhost:27017/user" , {useNewUrlParser : true});
-mongoose.set('useCreateIndex' , true);
+// mongoose.connect("mongodb://localhost:27017/user" , {useNewUrlParser : true});
+// mongoose.set('useCreateIndex' , true);
 
-const userSchema = new mongoose.Schema({
-  email : {
-    type : String,
-  },
-  password : {
-    type : String,
-  },
-  googleId : String,
-});
+// const userSchema = new mongoose.Schema({
+//
+// });
 
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
+// meetingsSchema.plugin(passportLocalMongoose);
+// meetingsSchema.plugin(findOrCreate);
 
-const User = new mongoose.model("User" , userSchema);
-
-passport.use(User.createStrategy());
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
-
-app.post("/register" , function(req , res){
-  // bcrypt.hash(req.body.pass , 10 , function(err, hash) {
-  //   const anyUser = new User({
-  //     email : req.body.email,
-  //     password : hash,
-  //   });
-  //   anyUser.save(function(err){
-  //     if(!err){
-  //         res.redirect("/index");
-  //     }
-  //     else{
-  //       console.log(err);
-  //     }
-  //   });
-  // });
-  User.register({username : req.body.username} , req.body.password , function(err , user){
-    if(err){
-      console.log(err);
-      res.redirect("/register");
-    }
-    else{
-        passport.authenticate("local")(req , res , function(){
-        res.redirect("/index");
-      });
-    }
-  });
-});
-
-app.post("/login" , function(req , res){
-  // User.findOne({email : req.body.email} , function(err , userItem){
-  //   if(!err){
-  //     if(userItem){
-  //       bcrypt.compare(req.body.password , userItem.password , function(err , result) {
-  //
-  //           if(result === true){
-  //             res.redirect("/index");
-  //             }
-  //             else{
-  //               res.redirect("/login");
-  //             }
-  //
-  //         });
-  //   }
-  // }
-  // });
-  const user = new User({
-    username : req.body.username,
-    password : req.body.password,
-  });
-
-  req.login(user , function(err){
-    if(err){
-      console.log(err);
-    }
-    else{
-      passport.authenticate("local")(req , res , function(){
-        res.redirect("/index");
-      });
-    }
-  });
-});
-
-app.get("/logout" , function(req , res){
-  req.logout();
-  res.redirect("/home");
-});
-
-app.get("/auth/google",
-  passport.authenticate('google', { scope: ["profile"] }));
-
-app.get("/auth/google/index",
-  passport.authenticate("google" , { failureRedirect: "/login" }),
-  function(req, res) {
-    res.redirect("/index");
-  });
+//const User = new mongoose.model("User" , userSchema);
+//
+// passport.use(Meeting.createStrategy());
+// passport.serializeUser(function(user, done) {
+//   done(null, user.id);
+// });
+// passport.deserializeUser(function(id, done) {
+//   Meeting.findById(id, function(err, user) {
+//     done(err, user);
+//   });
+// });
+//
+// app.post("/register" , function(req , res){
+//   // bcrypt.hash(req.body.pass , 10 , function(err, hash) {
+//   //   const anyUser = new User({
+//   //     email : req.body.email,
+//   //     password : hash,
+//   //   });
+//   //   anyUser.save(function(err){
+//   //     if(!err){
+//   //         res.redirect("/index");
+//   //     }
+//   //     else{
+//   //       console.log(err);
+//   //     }
+//   //   });
+//   // });
+//   Meeting.register({username : req.body.username} , req.body.password , function(err , user){
+//     if(err){
+//       console.log(err);
+//       res.redirect("/register");
+//     }
+//     else{
+//         passport.authenticate("local")(req , res , function(){
+//         res.redirect("/index");
+//       });
+//     }
+//   });
+// });
+//
+// app.post("/login" , function(req , res){
+//   // User.findOne({email : req.body.email} , function(err , userItem){
+//   //   if(!err){
+//   //     if(userItem){
+//   //       bcrypt.compare(req.body.password , userItem.password , function(err , result) {
+//   //
+//   //           if(result === true){
+//   //             res.redirect("/index");
+//   //             }
+//   //             else{
+//   //               res.redirect("/login");
+//   //             }
+//   //
+//   //         });
+//   //   }
+//   // }
+//   // });
+//   const user = new Meeting({
+//     username : req.body.username,
+//     password : req.body.password,
+//   });
+//
+//   req.login(user , function(err){
+//     if(err){
+//       console.log(err);
+//     }
+//     else{
+//       passport.authenticate("local")(req , res , function(){
+//         res.redirect("/index");
+//       });
+//     }
+//   });
+// });
+//
+// app.get("/logout" , function(req , res){
+//   req.logout();
+//   res.redirect("/home");
+// });
+//
+// app.get("/auth/google",
+//   passport.authenticate('google', { scope: ["profile"] }));
+//
+// app.get("/auth/google/index",
+//   passport.authenticate("google" , { failureRedirect: "/login" }),
+//   function(req, res) {
+//     res.redirect("/index");
+//   });

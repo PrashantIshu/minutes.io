@@ -35,7 +35,7 @@
           <div class="form-group row rowone">
             <label for="inputEmail4" multiple class="col-sm-2 col-form-label">Invitees</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputEmail4" placeholder="name and email addresses" name="attendees"  autocomplete="off" pattern="^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$">
+              <input type="text" class="form-control" id="inputEmail4" placeholder="name and email addresses" name="attendees"  autocomplete="on" pattern="^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$">
             </div>
           </div>
         <!-- </div> -->
@@ -91,7 +91,7 @@
 
         <td>
           <div class="input-group input-group-sm mb-3">
-          <input type="text" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="note">
+          <input type="text" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="note" autocomplete="off">
           </div>
         </td>
 
@@ -117,8 +117,23 @@
         <button type="button" class="add btn btn-outline-danger btn-sm buttons">Add</button>
 
         <button type="submit" value="submit" name="file" class="btn btn-primary btn-sm buttons"><i class="fas fa-check"></i> Submit</button>
-        <button type="submit" name="button" class="btn btn-danger btn-sm buttons publish">Publish</button>
-        <a class="btn btn-light btn-lg" href="/logout" name="logout" value="logout" role="button">Log Out</a>
+        <button type="submit" name="button" value="publish" class="btn btn-danger btn-sm buttons publish">Publish</button>
+
+
+        <div class="dropdown menu">
+          <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            &#9776;
+          </button>
+        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i></a>
+        <a class="dropdown-item" href="/list" name="logout" value="logout">My Meetings</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/logout" name="logout" value="logout">Log Out</a>
+
+        <!-- <a href="/logout" name="logout" value="logout" >Log Out</a> -->
+         <!-- class="btn btn-light btn-lg"  -->
+        </div>
+      </div>
       </form>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
