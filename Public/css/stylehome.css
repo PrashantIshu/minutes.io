@@ -3,13 +3,17 @@
 
 body {
   background-color: #E8ECEF;
+  font-family: "Itim"
 }
 
 .centered {
     /* padding-top: 150px; */
+    margin-top: 10%;
     text-align: center;
 }
-
+hr{
+  width:50%;
+}
 /* .secret-text {
   text-align: center;
   font-size: 2rem;

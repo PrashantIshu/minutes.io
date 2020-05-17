@@ -12,6 +12,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
+const FacebookStrategy = require('passport-facebook').Strategy;
 //const bcrypt = require('bcrypt');
 //const saltRounds = 10;
 //const md5 = require('md5');
@@ -44,12 +45,25 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+passport.use(new FacebookStrategy({
+    clientID: process.env.APP_ID,
+    clientSecret: process.env.APP_SECRET,
+    callbackURL: "http://localhost:10/auth/facebook/index"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    Meeting.findOrCreate({ facebookId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
 mongoose.connect("mongodb://localhost:27017/minutesDB" , {useNewUrlParser : true});
 mongoose.connect("mongodb://localhost:27017/minuteUserDB" , {useNewUrlParser : true});
 mongoose.set('useCreateIndex' , true);
 
 let a;
 let b,c,p,q,d;
+let z,deletedEmail;
 let itemsOne = [];
 let itemsTwo = [];
 let itemsThree = [];
@@ -67,29 +81,6 @@ app.listen(10 , function(){
 //
 // });
 const meetingsSchema = new mongoose.Schema({
-  minuteTakerEmail: {
-    type: String,
-    trim: true,
-    lowercase: true,
-    // unique: true,
-    //required: 'Email address is required',
-  },
-  invitedEmail: {
-    type: String,
-    trim: true,
-    lowercase: true,
-    // unique: true,
-    //required: 'Email address is required',
-  },
-  Agenda: String,
-  Venue: String,
-
-  Date: {
-    type: Date,
-    min: 2020-03-01,
-  },
-
-
     email : {
       type : String,
     },
@@ -97,7 +88,7 @@ const meetingsSchema = new mongoose.Schema({
       type : String,
     },
     googleId : String,
-
+    facebookId : String,
 });
 
 const minuteUserSchema = new mongoose.Schema({
@@ -216,24 +207,46 @@ app.get("/auth/google/index",
   passport.authenticate("google" , { failureRedirect: "/login" }),
   function(req, res) {
     res.redirect("/index");
-  });
+});
 
+app.get('/auth/facebook',
+  passport.authenticate('facebook'));
+
+app.get('/auth/facebook/index' ,
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/index');
+});
 
 app.get("/list" , function(req , res){
   if(req.isAuthenticated()){
-    Minuteuser.find({key: req.user.id} , function(err , meetings){
-      if(!err){
-      if(meetings.length === 0){
-        res.redirect("/copy");
-      }
-      else{
-         //res.render("list" , {itemList : itemsOne , itemTakerEmail : minuteTakerEmail , itemAttendeesEmail : itemsThree , totalMeetings : meetings});
-      res.render("list" , {totalMeetings : meetings});
-      }
+    if(req.user.username === 'user@admin.com'){
+      Minuteuser.find(function(err , meetings){
+        if(!err){
+          if(meetings.length === 0){
+            res.redirect("/index");
+          }
+          else{
+           //res.render("list" , {itemList : itemsOne , itemTakerEmail : minuteTakerEmail , itemAttendeesEmail : itemsThree , totalMeetings : meetings});
+           res.render("list" , {totalMeetings : meetings});
+         }
+       }
+     });
     }
-  });
+    else{
+      Minuteuser.find({key: req.user.id} , function(err , meetings){
+        if(!err){
+          if(meetings.length === 0){
+            res.redirect("/index");
+          }
+          else{
+           //res.render("list" , {itemList : itemsOne , itemTakerEmail : minuteTakerEmail , itemAttendeesEmail : itemsThree , totalMeetings : meetings});
+           res.render("list" , {totalMeetings : meetings});
+         }
+       }
+     });
+    }
   }
-
   else{
     res.redirect("/login");
   }
@@ -241,6 +254,10 @@ app.get("/list" , function(req , res){
 });
 
 app.get("/" , function(req , res){
+  res.render("home");
+});
+
+app.get("/copy" , function(req , res){
   res.sendFile(__dirname + "/copy.html");
 });
 
@@ -293,7 +310,7 @@ app.post("/index" , function(req , res){
 
   var x = new Date();
 
-  var t = console.log(x.toISOString().slice(0,10));
+  //var t = console.log(x.toISOString().slice(0,10));
                                                     // y = (req.body.initial+'T00:00:00-0500');
                                                     // console.log(Math.floor(new Date("2020-01-01").getTime()/1000));
   y=Math.floor(new Date(req.body.initial).getTime()/1000);
@@ -305,11 +322,11 @@ app.post("/index" , function(req , res){
   if(y < Date.now())
   {
                                                   // res.sendFile(__dirname + "/over.html");
-    console.log("Hello");
+    //console.log("Hello");
   }
   else
   {
-      console.log("world");
+      //console.log("world");
 
   }
   a = req.body.date;
@@ -322,8 +339,8 @@ app.post("/index" , function(req , res){
   itemsFour.push(d);
 
   sender = req.body.taker;
-  console.log(sender);
-  console.log(itemsThree);
+  //console.log(sender);
+  //console.log(itemsThree);
 //
 //
   let output = `
@@ -333,7 +350,7 @@ app.post("/index" , function(req , res){
       <li>Invitees : ${c}</li>
       <li>Agenda : ${req.body.about}</li>
       <li>Date : ${req.body.date}</li>
-      <li>Time : ${itemsFour}</li>
+      <li>Time : ${req.body.initial}</li>
       <li>Venue : ${req.body.note}</li>
     </ul>
     <p>You are kindly requested to attend the meeting on the above mentioned date and time.</p>
@@ -379,18 +396,18 @@ app.post("/index" , function(req , res){
   q = req.body.note;
   itemsSix.push(q);
 
-  console.log(req.user.id);
+  //console.log(req.user.id);
   Meeting.findById(req.user.id , function(err , foundUser){
     if(err){
       console.log(err);
     } else {
       if(foundUser){
-        console.log("User Found");
-        foundUser.minuteTakerEmail = 'prashantshekhar21102001@gmail.com';
-        foundUser.invitedEmail = c;
-        foundUser.Agenda = p;
-        foundUser.Venue = q;
-        foundUser.Date = a;
+        //console.log("User Found");
+        // foundUser.minuteTakerEmail = 'prashantshekhar21102001@gmail.com';
+        // foundUser.invitedEmail = c;
+        // foundUser.Agenda = p;
+        // foundUser.Venue = q;
+        // foundUser.Date = a;
         foundUser.save();
         // function(){
         //   res.redirect("/index");
@@ -405,7 +422,6 @@ app.post("/index" , function(req , res){
            Agenda: p,
            Venue: q,
            Date: a,
-           user: req.user.username,
         });
 
          //function(){
@@ -445,11 +461,19 @@ app.post("/index" , function(req , res){
 
 
 var updateId;
+
+var testEmail;
+var testAgenda;
+var testDate;
+var testVenue;
+var testInvitees;
+var testTime;
+
 app.post("/list" , function(req,res){
   var meetingId = req.body.checkbox;
   updateId = req.body.updateButton;
-  console.log(meetingId);
-  console.log(updateId);
+  //console.log(meetingId);
+  //console.log(updateId);
   if(req.body.doneone === "one")
   {
     res.sendFile(__dirname + "/success.html");
@@ -459,9 +483,25 @@ app.post("/list" , function(req,res){
   }
 
   else{
+
+    Minuteuser.findOne({_id : updateId} , function(err , meeting){
+      if(err){
+        console.log(err);
+      }
+      else{
+        if(meeting){
+          //testEmail=meeting.invitedEmail;
+          testAgenda=meeting.Agenda;
+          testDate=meeting.Date;
+          testVenue=meeting.Venue;
+          testInvitees=meeting.invitedEmail;
+          //testTime;
+        }
+      }
+    });
     res.redirect("/update");
   }
-  });
+});
 
 app.get("/update" , function(req , res){
   if(req.isAuthenticated()){
@@ -473,262 +513,348 @@ app.get("/update" , function(req , res){
 
 });
 
-var testEmail;
-var testAgenda;
-var testDate;
-var testVenue;
-let em , ag , da,ti,ve;
-app.post("/update" , function(req , res){
-//     testEmail = req.body.updateInvitees;
-//     testAgenda = req.body.updateAgenda;
-//     testDate = req.body.updateDate;
-//     testTime = req.body.updateTime;
-//     testVenue = req.body.updateVenue;
-//     // data = data.toString().replace(/\{\{someVal\}\}/, 'your value here');
+// app.get("/venue" , function(req , res){
+//   res.sendFile(__dirname + "/updatevenue.html");
+// });
 //
-    if(req.body.updateDelete === 'delete'){
-      // Meeting.findOne({_id : updateId} , function(err , foundMeetings){
-      //     if(err){
-      //       console.log(err);
-      //     }
-      //     else{
-      //         if(!foundMeetings){
-      //           console.log("Doesn't Exists");
-      //
-      //         }
-      //         else{
-      //           console.log("Exists");
-      //           // res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
-      //           da = foundMeetings.Date;
-      //           em = foundMeetings.invitedEmail;
-      //         }
-      //     }
-      // });
+//
+// app.post("/venue" , function(req , res){
+//   testVenue = req.body.update;
+//   Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Venue : testVenue} , function(err){
+//     if(err){
+//       console.log(err);
+//     }
+//     else{
+//       console.log("Successfully Updated");
+//       res.redirect("/update");
+//     }
+//   });
+// });
 
-        let outputDelete = `
-          <h4>Your meeting on has been canceled. </h4><br>
-          <h2>Stay tuned for further update</h2>
-          ;`
+// app.get("/agenda" , function(req , res){
+//   res.sendFile(__dirname + "/updateagenda.html");
+// });
+//
+// app.post("/agenda" , function(req , res){
+//   testAgenda = req.body.updateag;
+//   Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Agenda : testAgenda} , function(err){
+//     if(err){
+//       console.log(err);
+//     }
+//     else{
+//       console.log("Successfully Updated");
+//       res.redirect("/update");
+//     }
+//   });
+// });
 
-        let transporter = nodeMailer.createTransport({
-                                                                  // from: 'prashantshekhar28102001@gmail.com',
-          service: "gmail",
-          host: 'smtp.gmail.com',                                 // hostname
-          secureConnection: true,                                 // use SSL
-          port: 465,                                              // port for secure SMTP
-          transportMethod: 'SMTP',                                // default is SMTP. Accepts anything that nodemailer accepts
-          pool : true,
-          auth: {
-            // type: "OAuth2",
-            user: 'prashantshekhar21102001@gmail.com',
-            pass: 'prashantshekhar28102001'
-          }
-        });
+// app.get("/time" , function(req , res){
+//   res.sendFile(__dirname + "/updatetime.html");
+// });
+//
+// app.post("/time" , function(req , res){
+//   testTime = req.body.updateti;
+//   Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Time : testTime} , function(err){
+//     if(err){
+//       console.log(err);
+//     }
+//     else{
+//       console.log("Successfully Updated");
+//       res.redirect("/update");
+//     }
+//   });
+// });
 
-                                                                // hitmanshekhar28102001@gmail.com
+// app.get("/date" , function(req , res){
+//   res.sendFile(__dirname + "/updatedate.html");
+// });
+//
+// app.post("/date" , function(req , res){
+//   testDate = req.body.updateda;
+//   Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Date : testDate} , function(err){
+//     if(err){
+//       console.log(err);
+//     }
+//     else{
+//       console.log("Successfully Updated");
+//       res.redirect("/update");
+//     }
+//   });
+// });
+
+// app.get("/invitees" , function(req , res){
+//   res.sendFile(__dirname + "/updateinvitees.html");
+// });
+//
+// app.post("/invitees" , function(req , res){
+//   testInvitees = req.body.updatein;
+//   Minuteuser.updateOne({key: req.user.id , _id : updateId} , {invitedEmail : testInvitees} , function(err){
+//     if(err){
+//       console.log(err);
+//     }
+//     else{
+//       console.log("Successfully Updated");
+//       res.redirect("/update");
+//     }
+//   });
+// });
+
+console.log(testInvitees);
+let em , ag , da,ti,ve;
+
+app.post("/update" , function(req , res){
+
+  if(req.body.updateDelete === 'delete'){
+      Minuteuser.findOne({_id : updateId} , function(err , meeting){
+        deletedEmail = meeting.invitedEmail;
+        console.log(deletedEmail);
+      let outputDelete = `
+        <h2>Your meeting on has been canceled. </h2><br>
+        <h4>Stay tuned for further update</h4>
+        ;`
+
+      let transporter = nodeMailer.createTransport({
+        service: "gmail",
+        host: 'smtp.gmail.com',                                 // hostname
+        secureConnection: true,                                 // use SSL
+        port: 465,                                              // port for secure SMTP
+        transportMethod: 'SMTP',                                // default is SMTP. Accepts anything that nodemailer accepts
+        pool : true,
+        auth: {
+          user: 'prashantshekhar21102001@gmail.com',
+          pass: process.env.Password,
+        }
+      });
+
+
         let mailOptions = {
-            from : '"Prashant" <prashantshekhar21102001@gmail.com>',
-            to : "hitmanshekhar28102001@gmail.com",
-            // testEmail,
-            subject : 'Minutes.io',
-            text : 'Hello world',
-            html : outputDelete,
-          };
+          from : '"Prashant" <prashantshekhar21102001@gmail.com>',
+          to : deletedEmail,
+          subject : 'Minutes.io',
+          text : 'Hello world',
+          html : outputDelete,
+        };
 
 
-      Minuteuser.deleteOne({key: req.user.id , _id : updateId} , function(err){
+
+      transporter.sendMail(mailOptions, function(error,info){
+        if(error){
+          return console.log(error);
+        }
+        else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    });
+
+      Minuteuser.findByIdAndDelete({_id : updateId} , function(err , meeting){
         if(err){
           console.log(err);
         }
         else{
+          if(meeting){
+            deletedEmail = meeting.invitedEmail;
+            res.redirect("/list");
 
-          res.redirect("/list");
+          }
         }
-          });
-    }
-
-    else{
-      if(req.body.i === 'jyoti'){
-        res.redirect("/venue");
-      }
-      else if(req.body.h === 'raj'){
-        res.redirect("/agenda");
-      }
-      else if(req.body.j === 'anshu'){
-        res.redirect("/time");
-      }
-      else if(req.body.k === 'ishu'){
-        res.redirect("/date");
-      }
-      else if(req.body.g === 'aman'){
-        res.redirect("/invitees");
-      }
-      else{
-        res.redirect("/list");
-      }
+      });
     }
 
 
+    // else if(req.body.i === 'jyoti'){
+    //     //res.redirect("/venue");
+    //     testVenue = req.body.update;
+    //     Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Venue : testVenue} , function(err){
+    //       if(err){
+    //         console.log(err);
+    //       }
+    //       else{
+    //         console.log("Successfully Updated");
+    //         res.redirect("/update");
+    //       }
+    //     });
+    //   }
+      // else if(req.body.h === 'raj'){
+      //   //res.redirect("/agenda");
+      //   testAgenda = req.body.updateag;
+      //   Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Agenda : testAgenda} , function(err){
+      //     if(err){
+      //       console.log(err);
+      //     }
+      //     else{
+      //       console.log("Successfully Updated");
+      //       res.redirect("/update");
+      //     }
+      //   });
+      // }
+      // else if(req.body.j === 'anshu'){
+      //   //res.redirect("/time");
+      //   testTime = req.body.updateti;
+      //     Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Time : testTime} , function(err){
+      //       if(err){
+      //         console.log(err);
+      //       }
+      //       else{
+      //         console.log("Successfully Updated");
+      //         res.redirect("/update");
+      //       }
+      //     });
+      // }
+      // else if(req.body.k === 'ishu'){
+      //   //res.redirect("/date");
+      //   testDate = req.body.updateda;
+      //   Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Date : testDate} , function(err){
+      //     if(err){
+      //       console.log(err);
+      //     }
+      //     else{
+      //       console.log("Successfully Updated");
+      //       res.redirect("/update");
+      //     }
+      //   });
+      // }
+      //else if(req.body.g === 'aman'){
+        //res.redirect("/invitees");
 
 
-app.get("/venue" , function(req , res){
-  res.sendFile(__dirname + "/updatevenue.html");
-});
 
 
-app.post("/venue" , function(req , res){
-  testVenue = req.body.update;
-  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Venue : testVenue} , function(err){
-    if(err){
-      console.log(err);
-    }
-    else{
-      console.log("Successfully Updated");
-      res.redirect("/update");
-    }
-  });
-});
+// Minuteuser.findOne({key: req.user.id , _id : updateId} , function(err , foundMeetings){
+//     if(err){
+//       console.log(err);
+//     }
+//     else{
+//         if(foundMeetings){
+//           em = foundMeetings.invitedEmail;
+//           ag = foundMeetings.Agenda;
+//           da = foundMeetings.Date;
+//           ti = foundMeetings.Time;
+//           ve = foundMeetings.Venue;
+//         }
+          //console.log(ag);
 
-app.get("/agenda" , function(req , res){
-  res.sendFile(__dirname + "/updateagenda.html");
-});
+    else if(req.body.mail === 'submit'){
+      let outputUpdated = `
+        <h4>Your previous meeting has been updated</h4>
+        <h3>Meeting Details : </h3><br>
+        <ul>
+          <li>Invitees : ${testInvitees}</li>
+          <li>Agenda : ${testAgenda}</li>
+          <li>Date : ${testDate}</li>
+          <li>Venue : ${testVenue}</li>
+        </ul>
+        <p>You are kindly requested to attend the meeting on the above mentioned date and time.</p>
+      ;`
 
-app.post("/agenda" , function(req , res){
-  testAgenda = req.body.updateag;
-  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Agenda : testAgenda} , function(err){
-    if(err){
-      console.log(err);
-    }
-    else{
-      console.log("Successfully Updated");
-      res.redirect("/update");
-    }
-  });
-});
-
-app.get("/time" , function(req , res){
-  res.sendFile(__dirname + "/updatetime.html");
-});
-
-app.post("/time" , function(req , res){
-  testTime = req.body.updateti;
-  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Time : testTime} , function(err){
-    if(err){
-      console.log(err);
-    }
-    else{
-      console.log("Successfully Updated");
-      res.redirect("/update");
-    }
-  });
-});
-
-app.get("/date" , function(req , res){
-  res.sendFile(__dirname + "/updatedate.html");
-});
-
-app.post("/date" , function(req , res){
-  testDate = req.body.updateda;
-  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {Date : testDate} , function(err){
-    if(err){
-      console.log(err);
-    }
-    else{
-      console.log("Successfully Updated");
-      res.redirect("/update");
-    }
-  });
-});
-
-app.get("/invitees" , function(req , res){
-  res.sendFile(__dirname + "/updateinvitees.html");
-});
-
-app.post("/invitees" , function(req , res){
-  testInvitees = req.body.updatein;
-  Minuteuser.updateOne({key: req.user.id , _id : updateId} , {invitedEmail : testInvitees} , function(err){
-    if(err){
-      console.log(err);
-    }
-    else{
-      console.log("Successfully Updated");
-      res.redirect("/update");
+    let transporter = nodeMailer.createTransport({
+      service: "gmail",
+      host: 'smtp.gmail.com',                                 // hostname
+      secureConnection: true,                                 // use SSL
+      port: 465,                                              // port for secure SMTP
+      transportMethod: 'SMTP',                                // default is SMTP. Accepts anything that nodemailer accepts
+      pool : true,
+      auth: {
+        // type: "OAuth2",
+      user: 'prashantshekhar21102001@gmail.com',
+      pass: process.env.Password,
     }
   });
-});
-
-Minuteuser.findOne({key: req.user.id , _id : updateId} , function(err , foundMeetings){
-    if(err){
-      console.log(err);
-    }
-    else{
-        if(!foundMeetings){
-          console.log("Doesn't Exists");
-
-        }
-        else{
-          console.log("Exists");
-          // res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
-          em = foundMeetings.invitedEmail;
-          ag = foundMeetings.Agenda;
-          da = foundMeetings.Date;
-          ti = foundMeetings.Time;
-          ve = foundMeetings.Venue;
-          console.log(ag);
-        }
-    }
-});
-
-let outputUpdated = `
-  <h4>Your previous meeting has been updated</h4>
-  <h3>Meeting Details : </h3><br>
-  <ul>
-    <li>Invitees : ${em}</li>
-    <li>Agenda : ${ag}</li>
-    <li>Date : ${da}</li>
-
-    <li>Venue : ${ve}</li>
-  </ul>
-  <p>You are kindly requested to attend the meeting on the above mentioned date and time.</p>
-  ;`
-
-
-let transporter = nodeMailer.createTransport({
-
-  service: "gmail",
-  host: 'smtp.gmail.com',                                 // hostname
-  secureConnection: true,                                 // use SSL
-  port: 465,                                              // port for secure SMTP
-  transportMethod: 'SMTP',                                // default is SMTP. Accepts anything that nodemailer accepts
-  pool : true,
-  auth: {
-    // type: "OAuth2",
-    user: 'prashantshekhar21102001@gmail.com',
-    pass: process.env.Password,
-  }
-});
-
-                                                      
-let mailOptions = {
+  console.log(testInvitees);
+  let mailOptions = {
     from : '"Prashant" <prashantshekhar21102001@gmail.com>',
-    to : em,
+    to : testInvitees,
     // testEmail,
     subject : 'Minutes.io',
     text : 'Hello world',
     html :  outputUpdated,
   };
 
-if(req.body.mail === 'submit'){
   transporter.sendMail(mailOptions, function(error,info){
-    if(error){
-      return console.log(error);
-    }
-    else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
+      if(error){
+        return console.log(error);
+      }
+      else {
+        console.log('Email sent: ' + info.response);
+        res.redirect("/list")
+      }
+    });
+  }
+
+// else{
+//   res.redirect("/list");
+// }
+else{
+
+  if(req.body.button === "invitees"){
+    testInvitees = req.body.updatein;
+    console.log(testInvitees);
+    Minuteuser.updateOne({_id : updateId} , {invitedEmail : testInvitees} , function(err){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log("Successfully Updated");
+        res.redirect("/update");
+      }
+    });
+  }
+
+
+  else if(req.body.dt === "date"){
+    testDate = req.body.updateda;
+    Minuteuser.updateOne({_id : updateId} , {Date : testDate} , function(err){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log("Successfully Updated");
+        res.redirect("/update");
+      }
+    });
+  }
+
+  else if(req.body.ve === "venue"){
+    testVenue = req.body.update;
+    Minuteuser.updateOne({_id : updateId} , {Venue : testVenue} , function(err){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log("Successfully Updated");
+        res.redirect("/update");
+      }
+    });
+  }
+
+  else if(req.body.ag === "agenda"){
+    testAgenda = req.body.updateag;
+    Minuteuser.updateOne({_id : updateId} , {Agenda : testAgenda} , function(err){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log("Successfully Updated");
+        res.redirect("/update");
+      }
+    });
+  }
+
+  else if(req.body.ti === "time"){
+    testTime = req.body.updateti;
+      Minuteuser.updateOne({_id : updateId} , {Time : testTime} , function(err){
+        if(err){
+          console.log(err);
+        }
+        else{
+          console.log("Successfully Updated");
+          res.redirect("/update");
+        }
+      });
+  }
 }
 });
+
 
 
 // *********************************************authenticate*********************************************************

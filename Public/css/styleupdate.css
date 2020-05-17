@@ -43,3 +43,14 @@ h3{
 .click{
   background-color : none;
 }
+
+
+.menu{
+  position : absolute;
+  right : 1.5rem;
+  top : 2rem;
+}
+
+.dropdown-item:hover{
+  color : #dcdde1;
+}

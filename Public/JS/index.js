@@ -70,20 +70,22 @@ function adding() {
 
     '<td>' +
       '<div class="input-group input-group-sm mb-3">' +
-      '<input type="text" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="others">' +
+      '<input type="text" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="note">' +
       '</div>' +
     '</td>' +
-
+// others
+// about
+// about
     '<td>' +
       '<div class="input-group input-group-sm mb-3">' +
-      '<input type="time" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="about">' +
+      '<input type="time" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="initial">' +
       '</div>' +
     '</td>' +
 
     '<td>' +
       // '<input type="date" class="due" name="cal">' +
       '<div class="input-group input-group-sm mb-3">' +
-      '<input type="date" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="about" min="2020-03-01">' +
+      '<input type="date" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="date" min="2020-03-01">' +
       '</div>' +
     '</td>' +
 
@@ -98,3 +100,15 @@ $(".delete").click(function(){
   $("tr").eq(counter).remove();
   counter--;
  });
+
+$(".b").click(function(){
+  value=$(this).val();
+  $(".dropdown-toggle").val(value);
+});
+
+$(".dt").click(function(){
+  x=$(".dt").val($(this).slice(0,11));
+  alert(x);
+});
+
+//});

@@ -19,25 +19,48 @@
       <div class="row">
 
       <div id="updateForm" class="col">
-
+<!-- class="click btn btn-light" -->
+ <!-- name="g" value="aman" -->
+  <!-- type="submit" name="h" value="raj" -->
+   <!-- type="submit" name="i" value="jyoti" -->
+ <!-- class="click btn btn-light"  -->
+ <!-- type="submit" name="j" value="anshu" -->
+ <!-- type="submit" name="k" value="ishu" -->
         <p id="p1">
-          To update the list of invites <button type="submit" class="click btn btn-light" id="inviteesEmail" name="g" value="aman">Invitees</button>
-        </p><hr>
+          To update the list of invites  <a href="#" id="inviteesEmail">Invitees</a>
+        </p> <hr>
 
-        <p id="p2">To update the Agenda of meeting <button class="click btn btn-light" id="agenda" type="submit" name="h" value="raj">Agenda</button></p><hr>
+        <p id="p2">To update the Agenda of meeting  <a href="#" id="agenda">Agenda</a></p><hr>
 
-        <p id="p3">To update the Venue of meeting <button class="click btn btn-light" id="venue" type="submit" name="i" value="jyoti">Venue</button> </p><hr>
+        <p id="p3">To update the Venue of meeting  <a href="#" id="venue">Venue</a> </p><hr>
 
-        <p id="p4">To update the Time of meeting <button class="click btn btn-light" id="time" type="submit" name="j" value="anshu">Time</button></p><hr>
+        <p id="p4">To update the Time of meeting  <a href="#" id="time">Time</a></p><hr>
 
-        <p id="p5">To update the Date of meeting <button class="click btn btn-light" id="date" type="submit" name="k" value="ishu">Date</button></p><hr>
+        <p id="p5">To update the Date of meeting  <a href="#" id="date">Date</a></p><hr>
 
       </div>
      </div>
+     <div class="dropdown menu">
+       <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+         &#9776;
+       </button>
+     <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownMenuButton">
+     <a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i></a>
+     <a class="dropdown-item" href="/copy" name="logout" value="logout">About</a>
+     <a class="dropdown-item" href="/list" name="logout" value="logout">My Meetings</a>
+     <div class="dropdown-divider"></div>
+     <a class="dropdown-item" href="/logout" name="logout" value="logout">Log Out</a>
+
+     <!-- <a href="/logout" name="logout" value="logout" >Log Out</a> -->
+      <!-- class="btn btn-light btn-lg"  -->
+     </div>
+   </div>
       <button type="submit" class="btn btn-primary btn-sm buttons click" name="mail" value="submit"><i class="fas fa-check"></i> Submit</button>
 
       <button type="submit" class="btn btn-primary btn-sm buttons" name="updateDelete" value="delete">Delete</button>
     </form>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="JS\update.js" charset="utf-8"></script>
   </body>
 </html>

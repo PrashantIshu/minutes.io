@@ -1,5 +1,5 @@
 body {
-  margin-top : 10%;
+  margin-top : 6%;
   background-color: #f5f5f5;
 }
 
@@ -38,7 +38,7 @@ h1{
 }
 
 .sign-in{
-  margin-top : 1.75rem;
+  margin-top : 1rem;
 }
 
 img{
@@ -47,9 +47,47 @@ img{
   }
 
 span{
-  margin-left: 575px
+  margin-left: 575px;
+  position : relative;
+  top : 6rem
 }
 
 a{
   margin-top : 2.5px;
+}
+
+.btn-social{
+  width : 45%;
+}
+
+.fb{
+  position : relative;
+  bottom : 4.55rem;
+  left : 55%;
+}
+
+.or{
+  position : relative;
+  bottom : 1.9rem;
+  left : 47.5%;
+  font-weight: 100;
+  font-size: 0.75rem;
+}
+
+.link{
+  margin-top : -4rem;
+  font-weight: 500;
+  margin-left : 1.1rem;
+}
+
+.line-text{
+  position : relative;
+  bottom : 2.5rem;
+  left:74%;
+}
+
+.line-text-signup{
+  position : relative;
+  bottom : 2.5rem;
+  left:68%;
 }
