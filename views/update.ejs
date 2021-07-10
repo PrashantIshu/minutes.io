@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Update</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/894870cb8b.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Chilanka|Cookie|Courgette|Dancing+Script|Gayathri|Itim|Manjari|Marck+Script|Merienda|Rancho|Rochester|Sacramento&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css\styleupdate.css">
+  </head>
+  <body>
+    <h3>Update Your Meeting</h3>
+    <form action="/update/<%= id %>" method="post">
+
+      <div class="row">
+
+        <div id="updateForm" class="col">
+          <p id="p0">To update the Minute Taker of meeting  <a href="#" onclick="addtaker('<%= meeting.taker %>')">Taker</a></p><hr>
+          <p id="p1">
+            To update the list of invites  <a href="#" onclick="addinvitees('<%= meeting.attendees %>')">Invitees</a>
+          </p> <hr>
+
+          <p id="p2">To update the Agenda of meeting  <a href="#" onclick="addAgenda('<%= meeting.about %>')">Agenda</a></p><hr>
+
+          <p id="p3">To update the Venue of meeting  <a href="#" onclick="addVenue('<%= meeting.note %>')">Venue</a> </p><hr>
+
+          <p id="p4">To update the Time of meeting  <a href="#" onclick="addTime('<%= meeting.initial %>')">Time</a></p><hr>
+
+          <p id="p5">To update the Date of meeting  <a href="#" onclick="addDate('<%= meeting.date %>')">Date</a></p><hr>
+
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm buttons click" name="mail" value="mail"><i class="fas fa-check"></i> Submit</button>
+
+      <button type="submit" class="btn btn-primary btn-sm buttons" name="delete" value="delete">Delete</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/JS/update.js" charset="utf-8"></script>
+  </body>
+</html>

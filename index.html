@@ -17,40 +17,37 @@
     <div class="container-fluid">
 
     <div id="main">
-      <h1 class="top" contenteditable="true">Title</h1>
+      <h1 class="top">Minutes.io</h1>
       <p class="current-time">
 
       </p>
       <img src="https://images.pexels.com/photos/1198264/pexels-photo-1198264.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="pic">
 
-      <form action="/index" method="post">
+      <form action="/" method="post">
         <div id="formone">
           <div class="form-group row rowone">
             <label for="inputEmail3" class="col-sm-2 col-form-label">Minute Taker</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputEmail3" value="prashantshekhar21102001@gmail.com" name="taker"  autocomplete="off" disabled>
+              <input type="text" style="color: black;" class="form-control" id="inputEmail3"  name="taker" placeholder="Email address" autocomplete="on" required>
             </div>
           </div>
 
           <div class="form-group row rowone">
             <label for="inputEmail4" multiple class="col-sm-2 col-form-label">Invitees</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputEmail4" placeholder="name and email addresses" name="attendees"  autocomplete="on" pattern="^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$">
+              <input type="text" class="form-control" id="inputEmail4" placeholder="email addresses" name="attendees"  autocomplete="on" pattern="^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$" required>
             </div>
           </div>
-        <!-- </div> -->
 
 
 
         <div class="form-group row rowone">
           <label for="inputEmail4" class="col-sm-2 col-form-label">Agenda</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputEmail4" placeholder="about the meeting" name="about"  autocomplete="off">
+            <input type="text" style="color: black;" class="form-control" id="inputEmail4" placeholder="about the meeting" name="about"  autocomplete="off" required>
           </div>
         </div>
       </div>
-
-        <a href="#" type="button" name="button1" class="others">Others</a>
 
         <br> <br> <br>
 
@@ -71,20 +68,7 @@
 
           <div class="dropdown">
 
-          <input class="btn btn-secondary dropdown-toggle btn-sm" type="button" value="Todo" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <!-- Todo
-          </input> -->
-
-
-
-          <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-          <input class="b dropdown-item" type="button" value="Agenda">
-          <input class="b dropdown-item" type="button" value="Decision">
-          <input class="b dropdown-item" type="button" value="Done">
-          <input class="b dropdown-item" type="button" value="Info">
-          <input class="b dropdown-item" type="button" value="Idea">
-          <input class="b dropdown-item" type="button" value="Todo">
-
+          <input class="btn btn-secondary dropdown-toggle btn-sm" type="button" value="Todo" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" required>
           </div>
 
         </div>
@@ -92,34 +76,26 @@
 
         <td>
           <div class="input-group input-group-sm mb-3">
-          <input type="text" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="note" autocomplete="off">
+          <input type="text" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="note" required>
           </div>
         </td>
 
 
         <td>
           <div class="input-group input-group-sm mb-3">
-          <input type="time" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="initial">
+          <input type="time" class="form-control input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="initial" required>
           </div>
         </td>
 
           <td>
             <div class="input-group input-group-sm mb-3">
-            <input type="date" class="form-control dt input-two" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="date" min="2020-03-01">
+            <input type="date" class="form-control dt input-two" id="datefield" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" name="date" required>
             </div>
-            <!-- <input type="date" class="due" name="cal"> -->
-          </td>
-          <td>
-            <i class="fas fa-times delete"></i>
           </td>
         </tr>
       </table>
 
-        <button type="button" class="add btn btn-outline-danger btn-sm buttons">Add</button>
-
         <button type="submit" value="submit" name="file" class="btn btn-primary btn-sm buttons"><i class="fas fa-check"></i> Submit</button>
-        <button type="submit" name="button" value="publish" class="btn btn-danger btn-sm buttons publish">Publish</button>
-
 
         <div class="dropdown menu">
           <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -127,13 +103,8 @@
           </button>
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i></a>
-        <a class="dropdown-item" href="/copy" name="logout" value="logout">About</a>
         <a class="dropdown-item" href="/list" name="logout" value="logout">My Meetings</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="/logout" name="logout" value="logout">Log Out</a>
-
-        <!-- <a href="/logout" name="logout" value="logout" >Log Out</a> -->
-         <!-- class="btn btn-light btn-lg"  -->
         </div>
       </div>
 
@@ -147,4 +118,4 @@
     </div>
   </body>
 </html>
-<!-- <button type="button" class="delete btn btn-outline-danger btn-sm buttons"> -->
+

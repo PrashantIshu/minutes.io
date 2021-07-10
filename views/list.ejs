@@ -18,35 +18,25 @@
     <ul>
       <%  totalMeetings.forEach(function(meetings){  %>
         <li>
-          <p>Day of Meeting : <%= meetings.Date %> </p>
+          <p>Date of Meeting : <%= meetings.date %> <%= meetings.initial %></p>
 
-          <p>Email of Minute Taker : <%= meetings.minuteTakerEmail %> </p>
+          <p>Email of Minute Taker : <%= meetings.taker %> </p>
 
-          <p>Email of Attendees :  <%= meetings.invitedEmail %> </p>
+          <p>Email of Attendees :  <%= meetings.attendees %> </p>
 
-          <p>Agenda :  <%= meetings.Agenda %> </p>
+          <p>Agenda :  <%= meetings.about %> </p>
 
-          <p>Venue : <%= meetings.Venue %> </p>
+          <p>Venue : <%= meetings.note %> </p>
 
-          <!-- <button type="submit" class="cross" name="checkbox" value=<%= meetings._id %>><i class="fas fa-times delete"></i></button> -->
-
-            <!-- <button type="submit" name="update" value=<%= meetings._id %>>Update</button> -->
-            <!-- <a href="/update" name="checkbox" value=<%= meetings._id %>>Update</a> -->
-            <button type="submit" class="cross" name="updateButton" value=<%= meetings._id %>>Update</button>
-            <!-- <button type="submit" class="btn btn-primary btn-sm buttons" name="updateDel" value=<%= meetings._id %>>Delete</button> -->
+          <a href="/update/<%= meetings._id %>" name="checkbox">Update/Delete</a>
         </li><hr>
       <%  })  %>
     </ul>
 
-    <button type="submit" class="done btn btn-danger btn-md" name="donetwo" value="two">NewFile</button>
-    <button type="submit" class="done btn btn-outline-danger btn-md" name="doneone" value="one">Done</button>
+    <button type="submit" class="done btn btn-danger btn-md" name="new" value="two">New Meeting</button>
+    <button type="submit" class="done btn btn-outline-danger btn-md" name="done" value="one">Done</button>
 
   </form>
 
   </body>
 </html>
- <!-- btn btn-outline-danger btn-sm buttons -->
- <!-- for(var i=0; i<itemList.length; i++){ -->
-<!-- itemList[i]
-itemTakerEmail[i]
-itemAttendeesEmail[i] -->
